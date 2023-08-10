@@ -1,4 +1,4 @@
-# One up and running stock prediction using FinGPT and FinRL
+# Stock prediction using FinGPT and FinRL
 
 
 ## Machine Learning Enginnering is 10% of Machine Learning, and 90% of Enginnering.
