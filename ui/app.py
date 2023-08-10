@@ -1,60 +1,72 @@
 import streamlit as st
-import numpy as np
-import pandas as pd
+from transformers import BertTokenizer, TFBertForSequenceClassification
 import tensorflow as tf
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-import pickle
+from database_utils import get_db_session, query_data
+from your_model_file import StockData  # replace `your_model_file` with the actual module name
 
 # Constants
-MODEL_DIRECTORY = "models/"
-MAX_SEQUENCE_LENGTH = 250
-LOOKBACK_WINDOW = 60
+MODEL_NAME = 'bert-base-uncased'
+MODEL_PATH_TIME_SERIES = 'models/transformer_time_series'
+MODEL_PATH_SENTIMENT = 'models/transformer_sentiment'
+MAX_LEN = 250
 
-# Load models and utilities
-@st.cache(allow_output_mutation=True)
-def load_models(symbol):
-    time_series_model = tf.keras.models.load_model(f"{MODEL_DIRECTORY}time_series_model/{symbol}_lstm.h5")
-    sentiment_model = tf.keras.models.load_model(f"{MODEL_DIRECTORY}sentiment_model/{symbol}_sentiment_lstm.h5")
+# Load the tokenizers and models
+tokenizer_time_series = BertTokenizer.from_pretrained(MODEL_NAME)
+tokenizer_sentiment = BertTokenizer.from_pretrained(MODEL_NAME)
+model_time_series = TFBertForSequenceClassification.from_pretrained(MODEL_PATH_TIME_SERIES)
+model_sentiment = TFBertForSequenceClassification.from_pretrained(MODEL_PATH_SENTIMENT)
 
-    with open(f"{MODEL_DIRECTORY}sentiment_model/{symbol}_tokenizer.pkl", 'rb') as f:
-        tokenizer = pickle.load(f)
-    with open(f"{MODEL_DIRECTORY}sentiment_model/{symbol}_encoder.pkl", 'rb') as f:
-        encoder = pickle.load(f)
+# Streamlit UI
+st.title("Stock Price Prediction App")
 
-    return time_series_model, sentiment_model, tokenizer, encoder
+stock_code = st.text_input("Enter Stock Code or Name:")
 
-# Main Streamlit App
-def main():
-    st.title("Stock Forecast & Sentiment Analysis App")
-    
-    # Symbol selection
-    symbol = st.selectbox("Select Stock Symbol", ["AAPL", "MSFT", "GOOGL"])
-    time_series_model, sentiment_model, tokenizer, encoder = load_models(symbol)
-
-    # Time Series Prediction
-    st.header("Stock Price Forecast")
-    st.write(f"Predicting the stock price for {symbol} for the next day.")
-    
-    # Here, you would ideally fetch the last 60 days of data for the selected stock to make a prediction
-    # For demonstration purposes, let's assume we have a numpy array 'last_60_days_data' representing this
-    # last_60_days_data = np.array([...])
-
-    # prediction = time_series_model.predict(last_60_days_data.reshape(1, LOOKBACK_WINDOW, 1))
-    # st.write(f"Predicted stock price for the next day: ${prediction[0][0]:.2f}")
-
-    # Sentiment Analysis
-    st.header("Sentiment Analysis")
-    user_input_text = st.text_area("Paste a news article or social media post about the stock:")
-    
-    if st.button("Analyze Sentiment"):
-        # Preprocess the text
-        sequences = tokenizer.texts_to_sequences([user_input_text])
-        data = pad_sequences(sequences, maxlen=MAX_SEQUENCE_LENGTH)
+if stock_code:
+    # Query the database for stock data (assuming this is how you set it up)
+    with get_db_session() as db:
+        stock_data = query_data(db, StockData, StockData.symbol == stock_code)
         
-        # Predict sentiment
-        sentiment_score = sentiment_model.predict(data)[0][0]
-        sentiment_label = encoder.inverse_transform([int(sentiment_score > 0.5)])
-        st.write(f"Sentiment: {sentiment_label[0]} (Score: {sentiment_score:.2f})")
+    # Placeholder for data visualization if you need
+    # st.write(stock_data)
+    
+    # Time Series Prediction with Transformer Model
+    st.header("Stock Price Forecast with Transformer Model")
+    user_input_text = st.text_area("Enter stock-related text (news articles, financial reports, etc.):")
 
-if __name__ == "__main__":
-    main()
+    if st.button("Predict Stock Price with Transformer"):
+        # Encoding
+        encodings = tokenizer_time_series.encode_plus(user_input_text, add_special_tokens=True, max_length=MAX_LEN, 
+                                                      return_token_type_ids=False, padding='max_length', 
+                                                      return_attention_mask=True, return_tensors='tf')
+
+        # Inference
+        logits = model_time_series(encodings['input_ids'], attention_mask=encodings['attention_mask']).logits
+        prediction = tf.nn.softmax(logits, axis=1)
+        
+        # Interpret the prediction (this depends on how your output is structured)
+        predicted_class = tf.argmax(prediction).numpy()[0]
+        if predicted_class == 0:
+            st.write("Predicted stock price movement: Drop")
+        else:
+            st.write("Predicted stock price movement: Rise")
+
+    # Sentiment Analysis with Transformer Model
+    st.header("Sentiment Analysis with Transformer Model")
+    sentiment_input_text = st.text_area("Enter text for sentiment analysis:")
+
+    if st.button("Analyze Sentiment"):
+        # Encoding
+        encodings = tokenizer_sentiment.encode_plus(sentiment_input_text, add_special_tokens=True, max_length=MAX_LEN, 
+                                                    return_token_type_ids=False, padding='max_length', 
+                                                    return_attention_mask=True, return_tensors='tf')
+
+        # Inference
+        logits = model_sentiment(encodings['input_ids'], attention_mask=encodings['attention_mask']).logits
+        prediction = tf.nn.softmax(logits, axis=1)
+
+        # Interpret the prediction (assuming binary sentiment: 0 = negative, 1 = positive)
+        predicted_class = tf.argmax(prediction).numpy()[0]
+        if predicted_class == 0:
+            st.write("Sentiment: Negative")
+        else:
+            st.write("Sentiment: Positive")
