@@ -120,7 +120,7 @@
 
 ---
 
-### Additional Steps:
+### Second Phase:
 
 #### Deployment:
 - Use Docker containers or cloud services like AWS SageMaker for deployment.
@@ -134,7 +134,7 @@
 - Monitoring Dashboard.
   
 
-### 2. Web App Development Process:
+### 1. Web App Development Process:
 
 Once you have a trained agent, you can integrate it into a web app for user interaction. Here's a general workflow:
 
@@ -154,6 +154,11 @@ Once you have a trained agent, you can integrate it into a web app for user inte
 #### d. **Continuous Monitoring & Retraining**:
 - Continuously monitor the agent's performance. If the strategy starts underperforming, consider retraining the agent with newer data.
 - Ensure the app handles errors gracefully, especially when dealing with live financial data and trading decisions.
+
+
+### 2. Monitoring and Maintenance:
+
+### 3. 
 
 ### Important Points:
 
