@@ -11,27 +11,128 @@
 
 ## I am going to redo the app with the new idea of using FinGPT (for sentiment analysis) and FinRL Meta (for batch data training)
 
-### First, using FinRL-Meta to train a Agent locally. Doing Back-testing to evaluate the result. 
 
-### 1. Training a Strategy with FinRL-Meta:
+### 1. Problem Understanding and Definition
 
-#### a. **Data Collection**:
-- Gather historical stock price data. This can be daily, intraday, or any frequency that suits your strategy. You can use APIs like Yahoo Finance, Alpha Vantage, or other data providers.
+#### Objective:
+- **Document**: Write a formal Problem Statement document.
+  - Define the exact stock indices or companies you're focusing on.
+  - Outline the prediction horizon (e.g., daily, weekly).
 
-- Do the EDA
+#### Significance and Impact:
+- Conduct a market analysis to demonstrate the demand for such a product.
+- Identify potential financial metrics to quantify the impact (e.g., ROI).
 
-#### b. **Data Preprocessing**:
-- Process the data to compute various indicators or features, like moving averages, RSI, etc. FinRL provides utilities for this.
+#### Deliverables:
+- Problem Statement document.
+- Market Analysis report.
 
-#### c. **Defining the Environment**:
-- Using FinRL, you can define a custom trading environment or use the ones provided by the library.
+---
 
-#### d. **Training the Agent**:
-- Choose an RL algorithm (like DDPG, PPO, A3C, etc.). FinRL provides implementations of these algorithms.
-- Train the agent on the historical data. The agent learns a policy that maximizes the expected rewards (like portfolio value).
+### 2. Data Collection and Exploration
 
-#### e. **Evaluation**:
-- After training, evaluate the agent's performance on validation or test data. Check metrics like cumulative returns, Sharpe ratio, drawdown, etc.
+#### Data Sources:
+- Sign contracts with data providers for accurate and up-to-date stock market data.
+
+#### Data Gathering:
+- **Code**: Write ETL (Extract, Transform, Load) scripts to collect data.
+- **Database**: Store the raw data in a scalable database like AWS RDS or Azure SQL Database.
+
+#### Initial Exploration:
+- **Quality Check**: Implement automated checks for missing values and anomalies.
+
+#### Deliverables:
+- ETL code repository.
+- Database schema.
+- Data Quality report.
+
+---
+
+### 3. Data Preprocessing
+
+#### Missing Values:
+- Implement imputation algorithms tailored for time-series data, like forward-fill or interpolation.
+
+#### Outliers:
+- Use Z-score or Tukey's method to identify outliers and replace them.
+
+#### Data Transformation:
+- Use Min-Max scaling or Z-score normalization.
+
+#### Deliverables:
+- Preprocessing code repository.
+- Cleaned Data in a separate database table or schema.
+
+---
+
+### 4. Feature Engineering
+
+#### Technical Indicators:
+- Calculate technical indicators like SMA, EMA, RSI, and MACD.
+  
+#### Market Indicators:
+- Add features like market sentiment, news sentiment, or S&P 500 performance.
+
+#### Feature Selection:
+- Run algorithms like Recursive Feature Elimination (RFE).
+
+#### Deliverables:
+- Feature Engineering code repository.
+- Dataset with engineered features stored in a database.
+
+---
+
+### 5. Exploratory Data Analysis (EDA)
+
+#### Visualizations:
+- Generate interactive dashboards using tools like Tableau or Power BI.
+  
+#### Correlations:
+- Compute Spearman and Pearson correlation coefficients for all features.
+
+#### Deliverables:
+- EDA Dashboard.
+- EDA report.
+
+---
+
+### 6. Model Selection and Training
+
+#### Algorithm Selection:
+- Conduct literature reviews or pilot studies to select algorithms.
+
+#### Data Split:
+- Use Walk-Forward Validation or Time Series Split for more accurate evaluation.
+
+#### Backtesting:
+- Develop a backtesting engine to simulate trades and calculate performance metrics like Sharpe ratio.
+
+#### Model Training and Tuning:
+- Use hyperparameter tuning libraries like Optuna or Hyperopt.
+
+#### Evaluation:
+- Calculate error metrics (e.g., RMSE, MAE) and financial metrics (e.g., ROI from backtesting).
+
+#### Deliverables:
+- Trained models stored in a Model Repository.
+- Backtesting report.
+- Model Evaluation report.
+
+---
+
+### Additional Steps:
+
+#### Deployment:
+- Use Docker containers or cloud services like AWS SageMaker for deployment.
+
+#### Monitoring and Maintenance:
+- Implement automated monitoring using Grafana or custom dashboards.
+- Schedule periodic retraining of the model.
+
+#### Deliverables:
+- Deployment guide.
+- Monitoring Dashboard.
+  
 
 ### 2. Web App Development Process:
 
