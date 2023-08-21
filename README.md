@@ -177,6 +177,13 @@ Given that potentially large and diverse sets of data, AWS's robust cloud storag
 - Output format is dialoug respond to the user question.
 
 
+### Back testing
+Data Preparation: Make sure you have historical stock data that you can use for backtesting.
+
+Algorithm Development: Develop the algorithm that will take a user's trading strategy and simulate trades with historical data.
+
+Performance Metrics: Calculate essential metrics like ROI, Sharpe Ratio, Drawdown, etc., to evaluate the performance of the backtested strategy.
+
 
 ---
 
