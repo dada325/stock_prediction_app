@@ -1,4 +1,4 @@
-# Stock prediction using FinGPT and FinRL
+# Stock prediction (using FinGPT and FinRL) assisstant Project 
 
 
 ## Machine Learning Enginnering is 10% of Machine Learning, and 90% of Enginnering.
@@ -15,36 +15,83 @@
 ### 1. Problem Understanding and Definition
 
 #### Objective:
-- **Document**: Write a formal Problem Statement document.
+- **Document**:  Problem Statement document.
   - Define the exact stock indices or companies you're focusing on.
+    for the POV, will focusing on a couples of company
+
   - Outline the prediction horizon (e.g., daily, weekly).
+    Intraday is very good start point for the real time data project. I will set the getting data in 5 mins. 
 
 #### Significance and Impact:
-- Conduct a market analysis to demonstrate the demand for such a product.
+- Investment assisting is always a hit of the market. 
 - Identify potential financial metrics to quantify the impact (e.g., ROI).
 
-#### Deliverables:
-- Problem Statement document.
-- Market Analysis report.
+
 
 ---
 
 ### 2. Data Collection and Exploration
 
 #### Data Sources:
-- Sign contracts with data providers for accurate and up-to-date stock market data.
+- API, article scrapping, official documents, sec, earnings transcripts, etc. 
 
 #### Data Gathering:
-- **Code**: Write ETL (Extract, Transform, Load) scripts to collect data.
-- **Database**: Store the raw data in a scalable database like AWS RDS or Azure SQL Database.
+- **Code**: Write ETL (Extract, Transform, Load) scripts to collect data. (We are using AWS)
+- **Database**: Store the raw data in a scalable database like AWS RDS Database. 
+
+- <img width="1581" alt="Screenshot 2023-08-21 at 12 54 05" src="https://github.com/dada325/stock_prediction_app/assets/7775973/4a36a1d3-9c8b-489b-85fc-537a7d9136d4">
+Two Lambda functions, one to get 
+
+
+-  **Lambda Functions for New Features**
+**SEC Filings**
+Create a new Lambda function (fetch_sec_filings) that pulls SEC Filings for a list of companies.
+Store this data in the corresponding table in your PostgreSQL database.
+**Earnings Transcripts**
+Create another Lambda function (fetch_earnings_transcripts) to pull Earnings Transcripts.
+Store this data in the corresponding table in your PostgreSQL database.
+**Relevant News Articles**
+Create a Lambda function (fetch_news_articles) to pull in news articles relevant to the stock market.
+Store this data in the corresponding table in your PostgreSQL database.
+
+- Texts data:
+
+
+#### SEC Filings
+
+1. **Source**: SEC provides a public API where you can fetch filings.
+2. **Storage**: Store the raw filings in a structured format in your PostgreSQL database or in a Data Lake like AWS S3.
+3. **Lambda Function**: Create a Lambda function (`fetch_sec_filings`) to periodically pull this data.
+
+#### Earnings Transcripts
+
+1. **Source**: Several financial news websites and APIs provide earnings transcripts.
+2. **Storage**: Due to the textual nature of transcripts, you may also consider text search optimized storage like Elasticsearch, in addition to PostgreSQL.
+3. **Lambda Function**: Create a Lambda function (`fetch_earnings_transcripts`) to regularly update this information.
+
+#### Relevant News Articles
+
+1. **Source**: You can use APIs from news aggregators or trusted financial news websites.
+2. **Storage**: AWS S3 can be a good option for storing large volumes of news articles, especially if they contain multimedia elements.
+3. **Lambda Function**: Use a Lambda function (`fetch_news_articles`) to pull this data.
+
+
+**Data Transformation**: Depending on the source, you may need to transform the data before storing it in a way that's useful for your application.
+
+**Security**: Secure your data both in transit and at rest. Given that financial data is sensitive, employ best practices to keep it secure.
+
+Given that potentially large and diverse sets of data, AWS's robust cloud storage and compute options are a good fit. Lambda functions are a cost-effective way to collect data at scale without maintaining a running server.
+
+
+
+
+
+
 
 #### Initial Exploration:
 - **Quality Check**: Implement automated checks for missing values and anomalies.
 
-#### Deliverables:
-- ETL code repository.
-- Database schema.
-- Data Quality report.
+
 
 ---
 
@@ -59,11 +106,10 @@
 #### Data Transformation:
 - Use Min-Max scaling or Z-score normalization.
 
-#### Deliverables:
-- Preprocessing code repository.
-- Cleaned Data in a separate database table or schema.
+
 
 ---
+
 
 ### 4. Feature Engineering
 
@@ -84,6 +130,7 @@
 
 ### 5. Exploratory Data Analysis (EDA)
 
+
 #### Visualizations:
 - Generate interactive dashboards using tools like Tableau or Power BI.
   
@@ -98,7 +145,8 @@
 
 ### 6. Model Selection and Training
 
-#### Algorithm Selection:
+#### numerical data will be go to the Time series + Deep Reinforcement learning (PPO) pipe line 
+#### Algorithm Selection:(for structure data)
 - Conduct literature reviews or pilot studies to select algorithms.
 
 #### Data Split:
@@ -113,25 +161,28 @@
 #### Evaluation:
 - Calculate error metrics (e.g., RMSE, MAE) and financial metrics (e.g., ROI from backtesting).
 
-#### Deliverables:
-- Trained models stored in a Model Repository.
-- Backtesting report.
-- Model Evaluation report.
+### For the Text data: 
+
+#### Llama2 model fine tuning for the financial document. (or using FinGPT + FinRL meta, for that training a Llama2 7b is costing a lot. )
+
+#### Prompt Engineering: 
+- for the output to the user, will merge the numerical data and the prediction base on the SEC Filings , Earnings Transcripts, and some scraped article on the web.
+- Output format is dialoug respond to the user question.
+
+
 
 ---
 
 ### Second Phase:
 
 #### Deployment:
-- Use Docker containers or cloud services like AWS SageMaker for deployment.
+- Use Docker containers or cloud services  AWS SageMaker for deployment.
 
 #### Monitoring and Maintenance:
 - Implement automated monitoring using Grafana or custom dashboards.
 - Schedule periodic retraining of the model.
 
-#### Deliverables:
-- Deployment guide.
-- Monitoring Dashboard.
+#### Do not need user feedback. 
   
 
 ### 1. Web App Development Process:
@@ -139,17 +190,17 @@
 Once you have a trained agent, you can integrate it into a web app for user interaction. Here's a general workflow:
 
 #### a. **Backend Development**:
-- **Model Serving**: Use a framework like Flask or FastAPI to serve the trained model. The backend will handle requests to get trading actions based on the latest data.
+- **Model Serving**: Use FastAPI to serve the trained model. The backend will handle requests to get trading actions based on the latest data.
 - **Data Streaming**: Integrate with a real-time data provider to get live stock prices. This can be done using websockets or RESTful APIs, depending on the data source.
 
 #### b. **Frontend Development**:
-- Develop a user interface using a framework like React, Vue, or Angular.
+- Develop a user interface using a framework like React. 
 - Display real-time stock prices and the trading actions recommended by the RL agent.
 - Optionally, show historical performance metrics, charts, and other relevant information.
 
 #### c. **Deploying the App**:
-- Use cloud providers like AWS, Azure, or GCP to deploy your backend.
-- Use services like Netlify, Vercel, or traditional web hosts for the frontend.
+- Use   AWS to deploy backend.
+- Use services Vercel for the frontend.
 
 #### d. **Continuous Monitoring & Retraining**:
 - Continuously monitor the agent's performance. If the strategy starts underperforming, consider retraining the agent with newer data.
@@ -158,7 +209,7 @@ Once you have a trained agent, you can integrate it into a web app for user inte
 
 ### 2. Monitoring and Maintenance:
 
-### 3. 
+
 
 ### Important Points:
 
