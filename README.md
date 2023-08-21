@@ -1,5 +1,12 @@
 # Stock prediction (using FinGPT and FinRL) assisstant Project 
 
+My app is more than just a stock tracking tool; it’s a one-stop financial hub that makes you smarter about your money. With access to real-time stock data, SEC filings, earnings transcripts, and even real-time relevant news articles, you’ll have all the information you need to make informed decisions.
+
+🤖 But that’s not all! We harness the power of Machine Learning to analyze and transform this raw data into actionable insights. By using the historical data the agents can learn the optimal policy to get the max reward. The predictive models go beyond traditional metrics to offer technical indicators, market sentiment, and even seasonal trends.
+
+Combining the Two aspect, the LLM powered text sentement analyis on the specialist document, and Deep Reinforcement learning algorithm to boost the prediction, I am confident on this assisstant app. 
+
+
 
 ## Machine Learning Enginnering is 10% of Machine Learning, and 90% of Enginnering.
 
@@ -19,7 +26,7 @@
   - Define the exact stock indices or companies you're focusing on.
     for the POV, will focusing on a couples of company
 
-  - Outline the prediction horizon (e.g., daily, weekly).
+  - Outline the prediction horizon 
     Intraday is very good start point for the real time data project. I will set the getting data in 5 mins. 
 
 #### Significance and Impact:
