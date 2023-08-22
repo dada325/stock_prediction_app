@@ -14,6 +14,7 @@ Combining the Two aspect, the LLM powered text sentement analyis on the speciali
 
 ## Hight level design of Pipeline and data flywheel 
 
+![mermaid-diagram-2023-08-22-183727](https://github.com/dada325/stock_prediction_app/assets/7775973/54777361-548a-48b3-a7d1-3aed93f36fec)
 
 
 ## I am going to redo the app with the new idea of using FinGPT (for sentiment analysis) and FinRL Meta (for batch data training)
